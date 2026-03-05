@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Products UI • DummyJSON</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a33;
+      --card:#0f1f3d;
+      --card2:#0c1a35;
+      --text:#eaf0ff;
+      --muted:#a8b3d6;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius:18px;
+      --accent:#5eead4;
+      --accent2:#60a5fa;
+      --danger:#fb7185;
+      --warning:#fbbf24;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+              radial-gradient(1200px 800px at 15% 10%, rgba(94,234,212,.12), transparent 60%),
+              radial-gradient(1200px 800px at 85% 10%, rgba(96,165,250,.14), transparent 60%),
+              radial-gradient(1200px 800px at 50% 90%, rgba(251,113,133,.08), transparent 60%),
+              var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+    a{ color:inherit; text-decoration:none; }
+    button, input, select{ font:inherit; }
+    .wrap{ max-width:1200px; margin:0 auto; padding:22px; }
+
+    /* Topbar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:16px 18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      position:sticky;
+      top:14px;
+      z-index:20;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px; min-width: 220px;
+    }
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      background: linear-gradient(135deg, rgba(94,234,212,.95), rgba(96,165,250,.95));
+      display:grid; place-items:center;
+      color:#04121c;
+      font-weight:900;
+      box-shadow: 0 10px 30px rgba(96,165,250,.18);
+    }
+    .brand h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .brand p{ margin:0; color:var(--muted); font-size:12px; margin-top:2px; }
+
+    .controls{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+      flex:1;
+    }
+    .field{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      background:rgba(0,0,0,.22);
+      border-radius: 14px;
+      min-height:42px;
+    }
+    .field input{
+      border:none; outline:none; background:transparent;
+      color:var(--text);
+      min-width:240px;
+    }
+    .field input::placeholder{ color:rgba(168,179,214,.7); }
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .select{
+      border:none; outline:none;
+      background:transparent;
+      color:var(--text);
+      min-width:140px;
+    }
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: .15s transform, .15s background;
+    }
+    .btn:hover{ transform: translateY(-1px); background:rgba(255,255,255,.10); }
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, rgba(94,234,212,.95), rgba(96,165,250,.95));
+      color:#06131a;
+      font-weight:800;
+    }
+    .btn.danger{
+      border:none;
+      background: linear-gradient(135deg, rgba(251,113,133,.95), rgba(251,191,36,.90));
+      color:#1a0a10;
+      font-weight:800;
+    }
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:16px;
+      margin-top:16px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .brand{ min-width:auto; }
+      .field input{ min-width:160px; }
+    }
+
+    /* Sidebar */
+    .sidebar{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .side-head{
+      padding:14px 14px 10px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid var(--border);
+    }
+    .side-head b{ font-size:14px; }
+    .side-head small{ color:var(--muted); }
+    .catlist{
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height: 520px;
+      overflow:auto;
+    }
+    .cat{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid transparent;
+      background: rgba(0,0,0,.18);
+      cursor:pointer;
+      transition:.15s;
+    }
+    .cat:hover{ border-color: rgba(96,165,250,.35); background: rgba(96,165,250,.08); }
+    .cat.active{ border-color: rgba(94,234,212,.45); background: rgba(94,234,212,.10); }
+    .cat .name{
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      font-size:13px;
+    }
+    .badge{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255,255,255,.04);
+    }
+
+    /* Content area */
+    .content{
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .content-head{
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .content-head .meta{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .content-head .meta .pill{
+      padding:7px 10px;
+      border-radius: 999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      font-size:12px;
+      color: var(--muted);
+    }
+    .content-body{ padding:14px; }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 1100px){ .cards{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px){ .cards{ grid-template-columns: 1fr; } }
+
+    .card{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: 18px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 360px;
+      transition: .15s transform, .15s border-color;
+      cursor:pointer;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(94,234,212,.35);
+    }
+    .thumb{
+      position:relative;
+      height:180px;
+      background: rgba(0,0,0,.22);
+      overflow:hidden;
+    }
+    .thumb img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+    .thumb .discount{
+      position:absolute;
+      left:10px; top:10px;
+      background: rgba(251,113,133,.92);
+      color:#1b0a12;
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(251,113,133,.22);
+    }
+    .thumb .rating{
+      position:absolute;
+      right:10px; top:10px;
+      background: rgba(251,191,36,.92);
+      color:#1a1405;
+      font-weight:900;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(251,191,36,.18);
+    }
+    .card .body{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      flex:1;
+    }
+    .title{
+      font-weight:850;
+      font-size:14px;
+      line-height:1.25;
+      letter-spacing:.2px;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height: 36px;
+    }
+    .desc{
+      color: rgba(168,179,214,.9);
+      font-size:12px;
+      line-height:1.45;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height: 34px;
+    }
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top:auto;
+      padding-top:8px;
+      border-top:1px dashed rgba(255,255,255,.10);
+    }
+    .price{
+      font-size:16px;
+      font-weight:900;
+    }
+    .price small{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:700;
+      margin-left:6px;
+    }
+    .mini{
+      font-size:12px;
+      color: var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+
+    /* Footer pagination */
+    .pager{
+      padding:14px;
+      border-top:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pager .left, .pager .right{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .small{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .limit{
+      padding:9px 10px;
+      border:1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+      cursor:pointer;
+    }
+
+    /* Skeleton */
+    .skeleton{
+      position:relative;
+      overflow:hidden;
+    }
+    .skeleton::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer{
+      100%{ transform: translateX(100%); }
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display: flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .d-none {
+      display: none !important
+    }
+
+    .modal-card{
+      width:min(980px, 100%);
+      border-radius: 22px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(15,26,51,.95), rgba(10,16,32,.92));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .modal-head{
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal-head b{ font-size:14px; }
+    .close{
+      width:40px;height:40px;border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+    }
+    .modal-body{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:0;
+    }
+    @media (max-width: 880px){
+      .modal-body{ grid-template-columns: 1fr; }
+    }
+    .modal-img{
+      background: rgba(0,0,0,.25);
+      min-height: 340px;
+    }
+    .modal-img img{
+      width:100%; height:100%;
+      object-fit:cover; display:block;
+    }
+    .modal-info{ padding:14px; }
+    .krow{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 12px; }
+    .krow .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+    .modal-title{ font-size:18px; font-weight:950; margin:0 0 6px; }
+    .modal-desc{ margin:0 0 12px; color:rgba(168,179,214,.95); line-height:1.55; font-size:13px; }
+    .modal-price{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      margin:10px 0 14px;
+    }
+    .modal-price .big{ font-size:22px; font-weight:950; }
+    .modal-price .stock{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+    .cta{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+
+    .toast{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      background: rgba(15,26,51,.92);
+      border:1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      display:none;
+      max-width: 360px;
+      z-index: 70;
+    }
+    .toast.show{ display:block; }
+    .toast b{ font-size:13px; }
+    .toast p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.35; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">DJ</div>
+      <div>
+        <h1>DummyJSON Products</h1>
+        <p>Search • Sort • Category • Pagination • Modal</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="field" title="Search products">
+        <span class="chip">🔎 Search</span>
+        <input id="q" type="text" placeholder="օր. phone, laptop, perfume...">
+      </div>
+
+      <div class="field" title="Sort">
+        <span class="chip">↕ Sort</span>
+        <select id="sortBy" class="select">
+          <option value="">Default</option>
+          <option value="title">Title</option>
+          <option value="price">Price</option>
+        </select>
+        <select id="order" class="select" style="min-width:110px">
+          <option value="asc">ASC</option>
+          <option value="desc">DESC</option>
+        </select>
+      </div>
+
+      <button id="reset" class="btn">Reset</button>
+      <button id="refresh" class="btn primary">Refresh</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <aside class="sidebar">
+      <div class="side-head">
+        <div>
+          <b>Categories</b><br>
+          <small id="catCount">24 categories</small>
+        </div>
+        <span class="badge" id="activeCatBadge">All</span>
+      </div>
+
+      <div class="category" id="catList">
+        <div class="cat active" data-slug="all">
+          <div class="name">All products</div>
+          <span class="badge">all</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="content-head">
+        <div class="meta">
+          <span class="pill" id="resultInfo">All products • Total: 194</span>
+          <span class="pill" id="endpointInfo">endpoint: /products</span>
+        </div>
+        <div class="meta">
+          <span class="pill" id="pageInfo">page: 1 / 7</span>
+        </div>
+      </div>
+
+      <div class="content-body">
+        <div class="cards" id="card">
+<!--          <div class="card" data-id="1">-->
+<!--          <div class="thumb">-->
+<!--            <img src="https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp" alt="Essence Mascara Lash Princess" loading="lazy">-->
+<!--            <div class="discount">-10%</div>-->
+<!--            <div class="rating">★ 2.6</div>-->
+<!--          </div>-->
+<!--          <div class="body">-->
+<!--            <div class="title">Essence Mascara Lash Princess</div>-->
+<!--            <div class="desc">The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula.</div>-->
+<!--            <div class="row">-->
+<!--              <div class="price">$9.99 <small>USD</small></div>-->
+<!--              <div class="mini">beauty</div>-->
+<!--            </div>-->
+          </div>
+        </div>
+
+
+      <div class="pager">
+        <div class="left">
+          <button id="prev" class="btn" disabled="" style="opacity: 0.55;">← Prev</button>
+          <button id="next" class="btn" style="opacity: 1;">Next →</button>
+          <span class="small" id="rangeInfo">Showing 1-30 of 194</span>
+        </div>
+
+        <div class="right">
+          <span class="small">Limit</span>
+          <select id="limit" class="limit">
+            <option value="12">12</option>
+            <option value="18">18</option>
+            <option value="24">24</option>
+            <option value="30" selected="">30</option>
+          </select>
+          <span class="small">Skip</span>
+          <span class="badge" id="skipBadge">0</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal d-none" id="modal" >
+  <div class="modal-card">
+    <div class="modal-head">
+      <b id="modalHead">Product</b>
+      <button class="close" id="closeModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-img" id="modalImg"></div>
+      <div class="modal-info">
+        <h2 class="modal-title" id="mTitle">—</h2>
+        <div class="krow" id="mPills"></div>
+        <p class="modal-desc" id="mDesc">—</p>
+        <div class="modal-price">
+          <div class="big" id="mPrice">$0</div>
+          <div class="stock" id="mStock">stock: —</div>
+        </div>
+        <div class="cta">
+          <button class="btn primary" id="fakeAdd">Add to cart</button>
+          <button class="btn danger" id="fakeBuy">Buy now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <b id="toastTitle">—</b>
+  <p id="toastText">—</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
