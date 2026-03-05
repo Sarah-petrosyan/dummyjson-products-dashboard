@@ -18,7 +18,7 @@ The application allows users to browse products, search items, filter by categor
 
 The project focuses on building **interactive front-end functionality** using JavaScript while working with real API data and dynamic UI components.
 
-DummyJSON provides a free placeholder REST API with realistic product data, making it ideal for testing and prototyping front-end applications. :contentReference[oaicite:0]{index=0}
+DummyJSON provides a free placeholder REST API with realistic product data, making it ideal for testing and prototyping front-end applications. 
 
 This project was built to practice **API integration, DOM manipulation, and building dynamic user interfaces**.
 
@@ -29,7 +29,6 @@ This project was built to practice **API integration, DOM manipulation, and buil
 ✅ Beginner-friendly API integration project
 
 ---
-
 
 ## Getting Started
 
