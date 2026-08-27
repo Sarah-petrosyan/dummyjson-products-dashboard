@@ -212,6 +212,24 @@ askAiEl.onclick = function () {
             productEl.innerHTML = '<p>We don\'t carry anything like that.</p>'
             return
         }
+        if (filters.needsPrice) {
+            productEl.innerHTML = `
+                <div class="ask-price">
+                    <p>What's the most you want to spend?</p>
+                    <input id="priceInput" type="number" placeholder="50">
+                    <button id="priceBtn" class="btn primary">Show</button>
+                </div>`
+
+            $('#priceBtn').onclick = function () {
+                const value = Number($('#priceInput').value)
+                if (!value) {
+                    return
+                }
+                productEl.innerHTML = '<p>Loading…</p>'
+                showProducts(filters.category, value)
+            }
+            return
+        }
         if (!filters.category && filters.maxPrice === null) {
             productEl.innerHTML = '<p>No filters applied — try "cheap laptops under 1000" to narrow it down.</p>'
             return
