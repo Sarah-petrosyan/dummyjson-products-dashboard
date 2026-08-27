@@ -36,7 +36,8 @@ const mDescEl = $('#mDesc')
 const mPriceEl = $('#mPrice')
 const mStockEl = $('#mStock')
 const mPillsEl = $('#mPills')
-
+let aiEl = $('#ai')
+let askAiEl = $('#askAi')
 getApi('https://dummyjson.com/products').then(data => {
     renderProducts(data.products)
 }).catch(err => {
@@ -177,3 +178,16 @@ function loadSortedProducts() {
 
 sortByEl.onchange = loadSortedProducts
 orderEl.onchange = loadSortedProducts
+
+askAiEl.onclick = function () {
+    const text = aiEl.value.trim()
+    if (!text) {
+        return
+    }
+
+    getApi(`/api/search?q=${encodeURIComponent(text)}`).then(filters => {
+        console.log('filters:', filters)
+    }).catch(err => {
+        console.log(err)
+    })
+}
