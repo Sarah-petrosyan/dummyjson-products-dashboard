@@ -177,8 +177,28 @@ function loadSortedProducts() {
 }
 
 sortByEl.onchange = loadSortedProducts
-orderEl.onchange = loadSortedProducts
 
+orderEl.onchange = loadSortedProducts
+function showProducts(category, maxPrice) {
+    const url = category
+        ? `https://dummyjson.com/products/category/${category}`
+        : 'https://dummyjson.com/products?limit=100'
+
+    return getApi(url).then(data => {
+        let products = data.products
+
+        if (maxPrice !== null) {
+            products = products.filter(p => p.price <= maxPrice)
+        }
+
+        if (!products.length) {
+            productEl.innerHTML = '<p>Nothing matched that search.</p>'
+            return
+        }
+
+        renderProducts(products)
+    })
+}
 askAiEl.onclick = function () {
     const text = aiEl.value.trim()
     if (!text) {
@@ -196,24 +216,8 @@ askAiEl.onclick = function () {
             productEl.innerHTML = '<p>No filters applied — try "cheap laptops under 1000" to narrow it down.</p>'
             return
         }
-        const url = filters.category
-            ? `https://dummyjson.com/products/category/${filters.category}`
-            : 'https://dummyjson.com/products?limit=100'
+        return showProducts(filters.category, filters.maxPrice)
 
-        return getApi(url).then(data => {
-            let products = data.products
-
-            if (filters.maxPrice !== null) {
-                products = products.filter(p => p.price <= filters.maxPrice)
-            }
-
-            if (!products.length) {
-                productEl.innerHTML = '<p>Nothing matched that search.</p>'
-                return
-            }
-
-            renderProducts(products)
-        })
     }).catch(err => {
         productEl.innerHTML = '<p>Something went wrong.</p>'
         console.log(err)
