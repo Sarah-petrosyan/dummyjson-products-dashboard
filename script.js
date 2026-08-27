@@ -196,7 +196,7 @@ askAiEl.onclick = function () {
             let products = data.products
 
             if (filters.maxPrice !== null) {
-                products = /* YOUR LINE: keep only products at or below maxPrice */
+                products = products.filter(p => p.price <= filters.maxPrice)
             }
 
             if (!products.length) {
