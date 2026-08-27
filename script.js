@@ -188,8 +188,16 @@ askAiEl.onclick = function () {
     productEl.innerHTML = '<p>Thinking…</p>'
 
     getApi(`/api/search?q=${encodeURIComponent(text)}`).then(filters => {
+        if (!filters.category && filters.maxPrice === null) {
+            productEl.innerHTML = '<p>I didn\'t catch that. Try something like "cheap laptops under 1000".</p>'
+            return
+        }
         if (filters.unavailable) {
             productEl.innerHTML = '<p>We don\'t carry anything like that.</p>'
+            return
+        }
+        if (!filters.category && filters.maxPrice === null) {
+            productEl.innerHTML = '<p>No filters applied — try "cheap laptops under 1000" to narrow it down.</p>'
             return
         }
         const url = filters.category
