@@ -185,9 +185,29 @@ askAiEl.onclick = function () {
         return
     }
 
+    productEl.innerHTML = '<p>Thinking…</p>'
+
     getApi(`/api/search?q=${encodeURIComponent(text)}`).then(filters => {
-        console.log('filters:', filters)
+        const url = filters.category
+            ? `https://dummyjson.com/products/category/${filters.category}`
+            : 'https://dummyjson.com/products?limit=100'
+
+        return getApi(url).then(data => {
+            let products = data.products
+
+            if (filters.maxPrice !== null) {
+                products = /* YOUR LINE: keep only products at or below maxPrice */
+            }
+
+            if (!products.length) {
+                productEl.innerHTML = '<p>Nothing matched that search.</p>'
+                return
+            }
+
+            renderProducts(products)
+        })
     }).catch(err => {
+        productEl.innerHTML = '<p>Something went wrong.</p>'
         console.log(err)
     })
 }
