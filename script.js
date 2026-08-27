@@ -188,6 +188,10 @@ askAiEl.onclick = function () {
     productEl.innerHTML = '<p>Thinking…</p>'
 
     getApi(`/api/search?q=${encodeURIComponent(text)}`).then(filters => {
+        if (filters.unavailable) {
+            productEl.innerHTML = '<p>We don\'t carry anything like that.</p>'
+            return
+        }
         const url = filters.category
             ? `https://dummyjson.com/products/category/${filters.category}`
             : 'https://dummyjson.com/products?limit=100'

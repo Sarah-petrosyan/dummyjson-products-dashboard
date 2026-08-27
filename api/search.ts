@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic();
 
+
 const CATEGORIES = [
     "beauty", "fragrances", "furniture", "groceries", "home-decoration",
     "kitchen-accessories", "laptops", "mens-shirts", "mens-shoes", "mens-watches",
@@ -12,12 +13,14 @@ const CATEGORIES = [
 
 const SYSTEM = `You turn shopping requests into search filters.
 Reply with ONLY a JSON object. No explanation, no markdown code fences.
-Shape: {"category": string or null, "maxPrice": number or null}
+Shape: {"category": string or null, "maxPrice": number or null, "unavailable": true or false}
 "category" MUST be exactly one of these strings, or null if none fit:
-${CATEGORIES.join(", ")}`;
+${CATEGORIES.join(", ")}
+Set "unavailable" to true ONLY when the request asks for a type of product that is not in that list at all (for example pet supplies, or car insurance). Otherwise set it to false.`;
 
 export default {
     async fetch(request: Request) {
+
         const url = new URL(request.url);
         const q = url.searchParams.get("q") ?? "";
 
@@ -41,7 +44,8 @@ export default {
 
         const category = CATEGORIES.includes(parsed.category) ? parsed.category : null;
         const maxPrice = typeof parsed.maxPrice === "number" ? parsed.maxPrice : null;
+        const unavailable = parsed.unavailable === true;
 
-        return Response.json({ q, category, maxPrice });
+        return Response.json({ q, category, maxPrice, unavailable });
     },
 };
